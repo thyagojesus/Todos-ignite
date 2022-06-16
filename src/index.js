@@ -12,6 +12,7 @@ const users = [];
 
 function checksExistsUserAccount(request, response, next) {
     // Complete aqui
+    const { username } = request.header;
 }
 
 app.post("/users", (request, response) => {
@@ -34,6 +35,20 @@ app.post("/users", (request, response) => {
     users.push(user);
 
     return response.status(201).send({ message: "user created successfully!" });
+});
+
+app.get("/users", (request, response) => {
+    const { username } = request.headers;
+
+    const alreadyExists = users.some((user) => user.username === username);
+
+    if (!alreadyExists) {
+        return response.status(400).send({ error: "user already exists" });
+    }
+
+    const user = users.find((user) => user.username === username);
+
+    return response.status(201).send(user);
 });
 
 app.get("/todos", checksExistsUserAccount, (request, response) => {
